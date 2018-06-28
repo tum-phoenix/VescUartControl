@@ -60,7 +60,7 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 //#endif
 
 #if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
+#include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
@@ -75,7 +75,7 @@ void SetSerialPort(HardwareSerial* _serialPort);
 
 ///SetDebugSerialPort sets the serial for debug information
 
-void SetDebugSerialPort(HardwareSerial* _debugSerialPort);
+void SetDebugSerialPort(usb_serial_class* _debugSerialPort);
 
 ///PackSendPayload Packs the payload and sends it over Serial.
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you

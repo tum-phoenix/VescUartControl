@@ -23,7 +23,7 @@ static HardwareSerial* serialPort1;
 static HardwareSerial* serialPort2;
 static HardwareSerial* serialPort3;
 static HardwareSerial* serialPort4;
-static HardwareSerial* debugSerialPort = NULL;
+static usb_serial_class* debugSerialPort = NULL;
 
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len);
@@ -41,7 +41,7 @@ void SetSerialPort(HardwareSerial* _serialPort)
 	SetSerialPort(_serialPort, _serialPort, _serialPort, _serialPort);
 }
 
-void SetDebugSerialPort(HardwareSerial * _debugSerialPort)
+void SetDebugSerialPort(usb_serial_class * _debugSerialPort)
 {
 	debugSerialPort = _debugSerialPort;
 }
