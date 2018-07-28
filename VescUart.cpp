@@ -78,39 +78,44 @@ int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 			break;
 
 	}
+	uint8_t min_paylen = 3;
+	uint32_t start_micros = micros();
+	#define TIMEOUT_SERIAL 10000
 
-	while (serial->available()) {
+	while (micros()-start_micros <= TIMEOUT_SERIAL) {
+		if (serial->available()) {
 
-		messageReceived[counter++] = serial->read();
+			messageReceived[counter++] = serial->read();
 
-		if (counter == 2) {//case if state of 'counter' with last read 1
+			if (counter == 2) {//case if state of 'counter' with last read 1
 
-			switch (messageReceived[0])
+				switch (messageReceived[0])
+				{
+				case 2:
+					endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
+					lenPayload = messageReceived[1];
+					break;
+				case 3:
+					//ToDo: Add Message Handling > 255 (starting with 3)
+					break;
+				default:
+					break;
+				}
+
+			}
+			if (counter >= sizeof(messageReceived))
 			{
-			case 2:
-				endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
-				lenPayload = messageReceived[1];
-				break;
-			case 3:
-				//ToDo: Add Message Handling > 255 (starting with 3)
-				break;
-			default:
 				break;
 			}
 
-		}
-		if (counter >= sizeof(messageReceived))
-		{
-			break;
-		}
-
-		if (counter == endMessage && messageReceived[endMessage - 1] == 3) {//+1: Because of counter++ state of 'counter' with last read = "endMessage"
-			messageReceived[endMessage] = 0;
-			if (debugSerialPort != NULL) {
-				debugSerialPort->println("End of message reached!");
+			if (counter == endMessage && messageReceived[endMessage - 1] == 3) {//+1: Because of counter++ state of 'counter' with last read = "endMessage"
+				messageReceived[endMessage] = 0;
+				if (debugSerialPort != NULL) {
+					debugSerialPort->println("End of message reached!");
+				}
+				messageRead = true;
+				break; //Exit if end of message is reached, even if there is still more data in buffer.
 			}
-			messageRead = true;
-			break; //Exit if end of message is reached, even if there is still more data in buffer.
 		}
 	}
 	bool unpacked = false;
