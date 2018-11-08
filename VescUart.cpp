@@ -80,7 +80,7 @@ int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 	}
 	uint8_t min_paylen = 3;
 	uint32_t start_micros = micros();
-	#define TIMEOUT_SERIAL 10000
+	#define TIMEOUT_SERIAL 5000
 
 	while (micros()-start_micros <= TIMEOUT_SERIAL) {
 		if (serial->available()) {
@@ -267,7 +267,7 @@ bool VescUartGetValue(bldcMeasure& values, int num) {
 	uint8_t command[1] = { COMM_GET_VALUES };
 	uint8_t payload[256];
 	PackSendPayload(command, 1, num);
-	delay(10); //needed, otherwise data is not read
+	//delay(10); //needed, otherwise data is not read
 	int lenPayload = ReceiveUartMessage(payload, num);
 	if (lenPayload > 1) {
 		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
